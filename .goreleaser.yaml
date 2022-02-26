@@ -1,0 +1,43 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+    # you may remove this if you don't need go generate
+    - go generate ./...
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+brews:
+  - tap:
+      owner: szTheory
+      name: tap
+    commit_author:
+      name: szTheory
+      email: szTheory@users.noreply.github.com
+    homepage: "https://github.com/szTheory/favicheck"
+    description: "Detect a site's web framework from their favicon using the OWASP common favicons database"
+    license: "BSD"
+    skip_upload: auto
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

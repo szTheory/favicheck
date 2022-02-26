@@ -1,2 +1,8 @@
-bin/*
+# IDE
 .vscode
+
+# Build and test runners
+bin/*
+
+# Goreleaser
+dist/
