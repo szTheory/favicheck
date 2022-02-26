@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"crypto/md5"
 	"embed"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -25,7 +26,11 @@ func main() {
 	}
 
 	pathOrUrl := os.Args[1]
-	checksum := faviconChecksum(pathOrUrl)
+	checksum, err := faviconChecksum(pathOrUrl)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		return
+	}
 	database := buildDatabase()
 
 	// Find which framework matches the favicon's checksum
@@ -44,21 +49,33 @@ func printUsage() {
 	fmt.Println("  favicheck https://static-labs.tryhackme.cloud/sites/favicon/images/favicon.ico")
 }
 
-func readFavicon(pathOrUrl string) []byte {
+func readFavicon(pathOrUrl string) ([]byte, error) {
 	var file *os.File
 
 	// get file
 	if strings.HasPrefix(pathOrUrl, "http://") || strings.HasPrefix(pathOrUrl, "https://") {
 		// from URL
-		file = downloadFaviconToTempfile(pathOrUrl)
+		if !strings.HasSuffix(pathOrUrl, ".ico") {
+			return nil, errors.New("The URL is not a favicon")
+		}
+
+		var err error
+		file, err = downloadFaviconToTempfile(pathOrUrl)
+		if err != nil {
+			return nil, err
+		}
 		defer file.Close()
 		defer os.Remove(file.Name())
 	} else {
 		// from filesystem
+		if !strings.HasSuffix(pathOrUrl, ".ico") {
+			return nil, errors.New("The file is not a favicon")
+		}
+
 		var err error
 		file, err = os.Open(pathOrUrl)
 		if err != nil {
-			panic("Could not open favicon file: " + pathOrUrl)
+			return nil, errors.New("Could not open favicon file: " + pathOrUrl)
 		}
 		defer file.Close()
 	}
@@ -66,57 +83,60 @@ func readFavicon(pathOrUrl string) []byte {
 	// read its contents
 	data, err := io.ReadAll(file)
 	if err != nil {
-		panic("Could not read contents of favicon file: " + pathOrUrl)
+		return nil, errors.New("Could not read contents of favicon file: " + pathOrUrl)
 	}
 
-	return data
+	return data, nil
 }
 
-func downloadFaviconToTempfile(faviconUrl string) *os.File {
+func downloadFaviconToTempfile(faviconUrl string) (*os.File, error) {
 	// parse URL
 	u, err := url.Parse(faviconUrl)
 	if err != nil {
-		panic("Could not parse URL: " + faviconUrl)
+		return nil, errors.New("Could not parse URL: " + faviconUrl)
 	}
 
 	// download favicon from URL
 	response, err := http.Get(u.String())
 	if err != nil {
-		panic("Error while downloading favicon")
+		return nil, errors.New("Error while downloading favicon")
 	}
 	defer response.Body.Close()
 	if response.StatusCode != 200 {
-		panic("Error while downloading favicon: HTTP status code " + strconv.Itoa(response.StatusCode))
+		return nil, errors.New("Error while downloading favicon: HTTP status code " + strconv.Itoa(response.StatusCode))
 	}
 
 	// create tempfile to store the favicon
 	tempFile, err := os.CreateTemp("", "favicheck*.ico")
 	if err != nil {
-		panic("Error while creating tempfile")
+		return nil, errors.New("Error while creating tempfile")
 	}
 
 	// copy favicon to tempfile
 	_, err = io.Copy(tempFile, response.Body)
 	if err != nil {
-		panic(err)
+		return nil, errors.New("Error while copying download to tempfile")
 	}
 
 	// seek back to beginning after copy
 	tempFile.Seek(0, io.SeekStart)
 
-	return tempFile
+	return tempFile, nil
 }
 
 // Get the favicon file's md5 checksum
-func faviconChecksum(pathOrUrl string) string {
+func faviconChecksum(pathOrUrl string) (string, error) {
 	// get favicon data
-	faviconData := readFavicon(pathOrUrl)
+	faviconData, err := readFavicon(pathOrUrl)
+	if err != nil {
+		return "", err
+	}
 
 	// calculate its checksum
 	checksumBytes := md5.Sum(faviconData)
 	checksumString := fmt.Sprintf("%x", checksumBytes)
 
-	return checksumString
+	return checksumString, nil
 }
 
 // Build a database of favicon checksums to web framework names

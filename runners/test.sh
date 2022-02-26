@@ -40,10 +40,6 @@ test_stdout "Shows usage when not enough parameters" \
   "Usage: favicheck <filepath|url>" \
   ""
 
-test_stderr "Errors on missing files" \
-  "panic: Could not open favicon file: fixtures/NOTEXIST.ico" \
-  "fixtures/NOTEXIST.ico"
-
 test_stdout "Detects a matching favicon from file" \
   "Web framework: cgiirc (0.5.9)" \
   "fixtures/cgiirc.ico"
@@ -56,14 +52,22 @@ test_stdout "Detects a matching favicon from URL" \
   "Web framework: cgiirc (0.5.9)" \
   "https://static-labs.tryhackme.cloud/sites/favicon/images/favicon.ico"
 
-test_stdout "Non-matching favicon from URL" \
+test_stdout "Detects a non-matching favicon from URL" \
   "No matching web framework for this favicon" \
   "https://www.google.com/favicon.ico"
 
-test_stdout "URL is not a favicon" \
-  "panic: Could not open favicon file: ftp://www.google.com/favicon.ico" \
+test_stderr "Errors when the URL is not a favicon" \
+  "The URL is not a favicon" \
   "https://www.google.com/"
 
-test_stdout "File is not a favicon" \
-  "panic: Could not open favicon file: ftp://www.google.com/favicon.ico" \
-  "https://www.google.com/"
+test_stderr "Errors when the file is not a favicon" \
+  "The file is not a favicon" \
+  "README.md"
+
+test_stderr "Errors when the file doesn't exist on the filesystem" \
+  "Could not open favicon file: fixtures/doesntexist.ico" \
+  "fixtures/doesntexist.ico"
+
+test_stderr "Errors when favicon at URL not found" \
+  "Error while downloading favicon: HTTP status code 404" \
+  "https://www.google.com/doesntexist.ico"
