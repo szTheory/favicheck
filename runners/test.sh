@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 command="./bin/favicheck"
+success=1
 
 function test_stdout() {
   test "$1" "$2" "$3" "1"
@@ -26,6 +27,7 @@ function test() {
   else
     echo "$(tput setaf 1)FAIL$(tput sgr0)"
     echo "======> Failed command was: $(tput setaf 1)$original_command$(tput sgr0)"
+    success=0
     return 0
   fi
 }
@@ -71,3 +73,8 @@ test_stderr "Errors when the file doesn't exist on the filesystem" \
 test_stderr "Errors when favicon at URL not found" \
   "Error while downloading favicon: HTTP status code 404" \
   "https://www.google.com/doesntexist.ico"
+
+if [ $success -ne 1 ]; then
+  # Test suite failure
+  exit 1
+fi
