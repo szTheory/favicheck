@@ -33,8 +33,6 @@ favicheck ~/Downloads/favicon.ico
 ./runners/build.sh
 ```
 
-
-
 ## Running the test suite
 
 ```sh
