@@ -6,7 +6,6 @@ import (
 	"embed"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -65,7 +64,7 @@ func readFavicon(pathOrUrl string) []byte {
 	}
 
 	// read its contents
-	data, err := ioutil.ReadAll(file)
+	data, err := io.ReadAll(file)
 	if err != nil {
 		panic("Could not read contents of favicon file: " + pathOrUrl)
 	}
@@ -91,18 +90,21 @@ func downloadFaviconToTempfile(faviconUrl string) *os.File {
 	}
 
 	// create tempfile to store the favicon
-	f, err := os.CreateTemp("", "example")
+	tempFile, err := os.CreateTemp("", "favicheck*.ico")
 	if err != nil {
 		panic("Error while creating tempfile")
 	}
 
 	// copy favicon to tempfile
-	_, err = io.Copy(f, response.Body)
+	_, err = io.Copy(tempFile, response.Body)
 	if err != nil {
 		panic(err)
 	}
 
-	return f
+	// seek back to beginning after copy
+	tempFile.Seek(0, io.SeekStart)
+
+	return tempFile
 }
 
 // Get the favicon file's md5 checksum

@@ -63,3 +63,5 @@ test_stdout "Detects a matching favicon from file" \
 # Neither a file nor a URL
 
 # URL is not a favicon
+
+# Handles the case of Zero byte favicons
