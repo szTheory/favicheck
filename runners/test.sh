@@ -48,20 +48,22 @@ test_stdout "Detects a matching favicon from file" \
   "Web framework: cgiirc (0.5.9)" \
   "fixtures/cgiirc.ico"
 
-# Non-matching framework from file
 test_stdout "Shows when there is no match" \
   "No matching web framework for this favicon" \
   "fixtures/noframework.ico"
 
-# Matching framework from URL
-test_stdout "Detects a matching favicon from file" \
+test_stdout "Detects a matching favicon from URL" \
   "Web framework: cgiirc (0.5.9)" \
   "https://static-labs.tryhackme.cloud/sites/favicon/images/favicon.ico"
 
-# Non-matching framework from URL
+test_stdout "Non-matching favicon from URL" \
+  "No matching web framework for this favicon" \
+  "https://www.google.com/favicon.ico"
 
-# Neither a file nor a URL
+test_stdout "URL is not a favicon" \
+  "panic: Could not open favicon file: ftp://www.google.com/favicon.ico" \
+  "https://www.google.com/"
 
-# URL is not a favicon
-
-# Handles the case of Zero byte favicons
+test_stdout "File is not a favicon" \
+  "panic: Could not open favicon file: ftp://www.google.com/favicon.ico" \
+  "https://www.google.com/"
