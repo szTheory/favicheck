@@ -32,23 +32,17 @@ function test() {
   fi
 }
 
-# Rebuild
-./runners/build.sh
-
-# Run tests
-echo "Running tests..."
-
 test_stdout "Shows usage when not enough parameters" \
   "Usage: favicheck <filepath|url>" \
   ""
 
 test_stdout "Detects a matching favicon from file" \
   "Web framework: cgiirc (0.5.9)" \
-  "fixtures/cgiirc.ico"
+  "test_fixtures/cgiirc.ico"
 
 test_stdout "Shows when there is no match" \
   "No matching web framework for this favicon" \
-  "fixtures/noframework.ico"
+  "test_fixtures/noframework.ico"
 
 test_stdout "Detects a matching favicon from URL" \
   "Web framework: cgiirc (0.5.9)" \
@@ -67,8 +61,8 @@ test_stderr "Errors when the file is not a favicon" \
   "README.md"
 
 test_stderr "Errors when the file doesn't exist on the filesystem" \
-  "Could not open favicon file: fixtures/doesntexist.ico" \
-  "fixtures/doesntexist.ico"
+  "Could not open favicon file: test_fixtures/doesntexist.ico" \
+  "test_fixtures/doesntexist.ico"
 
 test_stderr "Errors when favicon at URL not found" \
   "Error while downloading favicon: HTTP status code 404" \

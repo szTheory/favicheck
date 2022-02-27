@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	//go:embed data/database.txt
+	//go:embed database.txt
 	databaseFile embed.FS
 )
 
@@ -142,7 +142,7 @@ func faviconChecksum(pathOrUrl string) (string, error) {
 // Build a database of favicon checksums to web framework names
 func buildDatabase() map[string]string {
 	// open file
-	file, err := os.Open("data/database.txt")
+	file, err := os.Open("database.txt")
 	defer file.Close()
 	if err != nil {
 		panic("Could not open database.txt")

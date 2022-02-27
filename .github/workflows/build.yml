@@ -20,4 +20,4 @@ jobs:
         go-version: 1.17
 
     - name: Test
-      run: bash runners/test.sh
+      run: make test
