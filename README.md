@@ -66,6 +66,8 @@ make lint
 
 ## Releasing
 
+Bump the version number in the snippet below
+
 ```sh
 git tag -a v0.1.0 
 git push origin v0.1.0
