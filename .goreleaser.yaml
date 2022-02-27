@@ -23,14 +23,16 @@ archives:
 brews:
   - tap:
       owner: szTheory
-      name: tap
+      name: favicheck
     commit_author:
       name: szTheory
       email: szTheory@users.noreply.github.com
+    folder: Formula
+    test: |
+      system "#{bin/favicheck}"
     homepage: "https://github.com/szTheory/favicheck"
     description: "Detect a site's web framework from their favicon using the OWASP common favicons database"
     license: "BSD"
-    skip_upload: auto
 checksum:
   name_template: 'checksums.txt'
 snapshot:
