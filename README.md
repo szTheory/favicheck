@@ -30,11 +30,11 @@ favicheck ~/Downloads/favicon.ico
 ## Building the binary
 
 ```sh
-./runners/build.sh
+make build
 ```
 
 ## Running the test suite
 
 ```sh
-./runners/test.sh
+make test
 ```
