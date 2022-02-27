@@ -124,7 +124,7 @@ func downloadFaviconToTempfile(faviconURL string) (*os.File, error) {
 	return tempFile, nil
 }
 
-// Get the favicon file's md5 checksum
+// Get the favicon file's md5 checksum.
 func faviconChecksum(pathOrURL string) (string, error) {
 	// get favicon data
 	faviconData, err := readFavicon(pathOrURL)

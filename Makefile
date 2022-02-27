@@ -6,3 +6,5 @@ build:
 test: build
 	./test.sh
 
+lint: build
+	golangci-lint run

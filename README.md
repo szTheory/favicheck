@@ -33,6 +33,14 @@ favicheck ~/Downloads/favicon.ico
 make build
 ```
 
+## Lint code
+
+```sh
+make lint
+```
+
+
+
 ## Running the test suite
 
 ```sh
