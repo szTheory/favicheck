@@ -9,6 +9,24 @@ $ favicheck https://static-labs.tryhackme.cloud/sites/favicon/images/favicon.ico
 Web framework: cgiirc (0.5.9)
 ```
 
+## Usage
+
+```sh
+favicheck <filepath|url>
+```
+
+### Examples
+
+```sh
+# Check favicon from URL
+favicheck https://static-labs.tryhackme.cloud/sites/favicon/images/favicon.ico
+```
+
+```sh
+# Check favicon from file
+favicheck ~/Downloads/favicon.ico
+```
+
 ## Install
 
 ### Option 1: Download the binary
@@ -28,23 +46,13 @@ brew install favicheck
 go get github.com/szTheory/favicheck
 ```
 
-## Usage
+### Option 4: Run directly from source
 
 ```sh
-favicheck <filepath|url>
+go run main.go https://static-labs.tryhackme.cloud/sites/favicon/images/favicon.ico
 ```
 
-### Examples
 
-```sh
-# Check favicon from URL
-favicheck https://static-labs.tryhackme.cloud/sites/favicon/images/favicon.ico
-```
-
-```sh
-# Check favicon from file
-favicheck ~/Downloads/favicon.ico
-```
 
 ## Building the binary
 
